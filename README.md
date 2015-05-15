@@ -71,6 +71,68 @@ Examples:
 * `bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1`
 
+## Installion guide of docker on RHEL 7.1
+
+### installing docker
+
+Complete description for docker installation can be found here: https://access.redhat.com/articles/881893 and here https://docs.docker.com/installation/rhel/
+
+  `# sudo subscription-manager register --username=rhnuser --password=rhnpasswd`
+ 
+  `# sudo subscription-manager list --available  Find pool ID for RHEL subscription`
+ 
+  `# sudo subscription-manager attach --pool=pool_id`
+ 
+  `# sudo subscription-manager repos --enable=rhel-7-server-extras-rpms`
+ 
+  `# sudo subscription-manager repos --enable=rhel-7-server-optional-rpms`
+ 
+  `# sudo suyum install docker docker-registry`
+ 
+  `# sudo yum install device-mapper-libs device-mapper-event-libs`
+ 
+  `# sudo systemctl stop firewalld.service`
+  
+  `# sudo systemctl disable firewalld.service`
+  
+Start docker:
+
+  `# sudo systemctl start docker.service`
+  
+Enable docker:
+  `# sudo systemctl enable docker.service`
+
+Check docker status:
+
+  `# sudo systemctl status docker.service`
+
+You should see the following output:
+
+    docker.service - Docker Application Container Engine
+       Loaded: loaded (/usr/lib/systemd/system/docker.service; enabled)
+       Active: active (running) since Thu 2014-10-23 11:32:11 EDT; 14s ago
+         Docs: http://docs.docker.io
+     Main PID: 2068 (docker)
+       CGroup: /system.slice/docker.service
+               └─2068 /usr/bin/docker -d --selinux-enabled -H fd://
+    ...
+
+
+Testing installation :
+
+  `sudo docker run ubuntu /bin/echo hello world`
+  
+
+### Installing git :
+
+  `sudo yum install git`
+  
+### Checking out the project :
+
+  `git clone https://<your git uid>:<your git credentials>@github.com/Alfresco/on-docker.git`
+  
+
+
 ## Possible developments
 
 
