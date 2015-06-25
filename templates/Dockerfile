@@ -35,6 +35,10 @@ RUN   chmod +x /tuneglobal.sh
 # COPY  ./alfrescotrashcancleaner2.amp  /
 # RUN   mv /alfrescotrashcancleaner2.amp /opt/alfresco-__version__/amps
 # COPY  ./protectnodes.amp /
+COPY ./modules/server/*.amp /
+RUN  mv *.amp /opt/alfresco-__version__/amps
+COPY ./modules/share/*.amp /
+RUN mv *.amp /opt/alfresco-__version__/amps_share
 # copy jdbcs
 COPY ./jdbcs/*.jar /
 RUN  mv *.jar /opt/alfresco-__version__/tomcat/lib

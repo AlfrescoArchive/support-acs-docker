@@ -31,6 +31,10 @@ To run a stack to phases are applied:
 
 ./licenses/&lt;version>/&lt;license files&gt;: contains the *.lic files organized by versions. I.e: ./licenses/5.0.0.5/Alfresco-ent50-AlfrescoInternalPhilippeDubois50.lic
 
+./modeules/server: contains the server tier modules that will be installed
+
+./modules/share: contains the share tier modules that will be installed
+
 ./templates/ : contains a generic version of Dockerfile. The &#95;&#95;version&#95;&#95; place holder will be replaced by the actual version during the generation phase.
 
 ./generated : contains the files generated during the generate phase.

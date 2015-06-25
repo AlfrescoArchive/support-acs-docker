@@ -10,6 +10,9 @@ fi
 mkdir ./generated
 mkdir ./generated/jdbcs
 mkdir ./generated/license
+mkdir ./generated/modules
+mkdir ./generated/modules/share
+mkdir ./generated/modules/server
 
 # copying the installer
 cp ./installers/alfresco-enterprise-$1-installer-linux-x64.bin ./generated
@@ -18,7 +21,9 @@ cp ./*.py ./generated
 
 cp ./*.xml ./generated
 
-cp ./*.amp ./generated
+cp ./modules/share/*.amp ./generated/modules/share
+
+cp ./modules/server/*.amp ./generated/modules/server
 
 cp ./jdbcs/$1/*.jar ./generated/jdbcs
 
