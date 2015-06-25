@@ -26,7 +26,7 @@ if [ "$1" == "mysql" ]; then
         echo "behavior, this means that it will not accept incoming connections until such initialization"
         echo "Sleeping 30 secs waiting for initialization !!!" 
         sleep 30
-	docker run -it --link $CONTAINER_TO_LINK_TO:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' < ./db_scripts/mysql/create.sql
+	docker run -i --link $CONTAINER_TO_LINK_TO:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' < ./db_scripts/mysql/create.sql
         echo "Database created!"
         export DB_DRIVER='db.driver.EQ.org.gjt.mm.mysql.Driver'
 	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
@@ -46,7 +46,7 @@ if [ "$1" == "mariadb" ]; then
         echo "behavior, this means that it will not accept incoming connections until such initialization"
         echo "Sleeping 30 secs waiting for initialization !!!" 
         sleep 30
-	docker run -it --link $CONTAINER_TO_LINK_TO:mysql --rm mariadb sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' < ./db_scripts/mariadb/create.sql
+	docker run -i --link $CONTAINER_TO_LINK_TO:mysql --rm mariadb sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' < ./db_scripts/mariadb/create.sql
         echo "Database created!"
         export DB_DRIVER='db.driver.EQ.org.gjt.mm.mysql.Driver'
 	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
@@ -63,7 +63,7 @@ if [ "$1" == "postgres" ]; then
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:postgres"
         docker run --name $CONTAINER_TO_LINK_TO -e POSTGRES_PASSWORD=mysecretpassword -d postgres:$2
         sleep 30  
-	docker run -it --link  $CONTAINER_TO_LINK_TO_POSTFIXED --rm postgres sh -c 'export PGPASSWORD=mysecretpassword;exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres' < ./db_scripts/postgres/create.sql
+	docker run -i --link  $CONTAINER_TO_LINK_TO_POSTFIXED --rm postgres sh -c 'export PGPASSWORD=mysecretpassword;exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres' < ./db_scripts/postgres/create.sql
         export DB_DRIVER='org.postgresql.Driver'
 	export DB_HOST='db.host.EQ.POSTGRES_PORT_5432_TCP_ADDR'
 	export DB_PORT='db.port.EQ.5432'
