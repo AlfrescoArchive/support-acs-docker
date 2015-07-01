@@ -75,6 +75,48 @@ Examples:
 * `bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1`
 
+## Verifying that your stack is up and running
+
+ `$ sudo docker ps`
+ 
+ `CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES`
+ 
+ `42bb34baae8c        alfresco5011        "/bin/sh -c '/entry.   45 minutes ago      Up 45 minutes       **0.0.0.0:32771->8443/tcp**   deamon`
+ 
+ `54dadba305ea        postgres:9.3.5      "/docker-entrypoint.   45 minutes ago      Up 45 minutes       5432/tcp                  Postgres_deamon`
+ 
+ 
+ You can observe that 2 containers are runnig, `42bb34baae8c` is used to run `alfresco`, `54dadba305ea` is used to to run `postgres`
+ 
+### Ho can I connect to my alfresco instance using browser?
+
+From the above output, you can observe that alfresco ssl port 8443 is mapped to port 32771 on your host. By browing "https://<your host>:32771/share you will get login to share.
+ 
+### How to connect to the alfresco container using using shell command on a TTY?
+ 
+  `$ sudo docker exec -i -t 42bb34baae8c /bin/bash`
+  
+ `[sudo] password for philippe:`
+  
+ `root@42bb34baae8c:/# ps -eaf`
+ 
+ `UID        PID  PPID  C STIME TTY          TIME CMD`
+ 
+ `root         1     0  0 01:34 ?        00:00:00 /bin/sh -c /entry.sh;/opt/alfresco-5.0.1/alfresco.sh start;while true; do ps -a; sleep 5; done`
+ 
+ `root       515     1 19 01:35 ?        00:12:29 /opt/alfresco-5.0.1/java/bin/java -Djava.util.logging.config.file=/opt/alfresco-5.0.1/tomcat/conf/logging.properties -Djava.util.lo`
+ 
+ `root       647   515  0 01:36 ?        00:00:07 /opt/alfresco-5.0.1/libreoffice/program/.soffice.bin --accept=socket,host=127.0.0.1,port=8100;urp; -env:UserInstallation=file:///op`
+ 
+ `root      2595     0  0 02:38 ?        00:00:00 /bin/bash`
+ 
+ `root      2611     1  0 02:38 ?        00:00:00 sleep 5`
+ 
+ `root      2612  2595  0 02:38 ?        00:00:00 ps -eaf`
+
+ You can observe that an alfresco process it up and running 
+
+
 ## Installion guide of docker on RHEL 7.1
 
 ### installing docker
