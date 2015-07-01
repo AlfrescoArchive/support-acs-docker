@@ -32,6 +32,11 @@ do
         varvalue=`echo -e "${!varvalue}"`
         echo "varvalue POSTGRES:$varvalue"
      fi
+# if varvalue starts with ORACLE then it is considered as a ORACLE comming from the linked container
+     if [[ $varvalue == ORACLE* ]]; then
+        varvalue=`echo -e "${!varvalue}"`
+        echo "varvalue ORACLE:$varvalue"
+     fi
 # test if varvalue already configured in alfresco-global.properties
      if grep -q ^$name /opt/alfresco-__version__/tomcat/shared/classes/alfresco-global.properties
      then

@@ -12,7 +12,7 @@ If you do not want to install `docker` directly on your local machine you have t
 At this moment a stack is composed so far of:
 
    1. A specialized container dedicated to content storage. Content will be stored into this paticular container and keep separate from the container that will be used to run `alfresco`. This container will expose a volume to other containers. This container will be build from the same image running `alfresco` but won't be "running" in the "common" sense. This container is used to share data amongst containers forming a stack. It will also be useful for deploying clusters in the future.
-   2. A database container running the required database flavor and version. The image will be pulled automatically from [docker hub](https://registry.hub.docker.com) if not present in your local repository. The databases supported so far in this project are [MySQL](https://registry.hub.docker.com/_/mysql/tags/manage/), [Postgres](https://registry.hub.docker.com/_/postgres/tags/manage/) and [MariaDB](https://registry.hub.docker.com/_/mariadb/tags/manage/)
+   2. A database container running the required database flavor and version. The image will be pulled automatically from [docker hub](https://registry.hub.docker.com) if not present in your local repository. The databases supported so far in this project are [MySQL](https://registry.hub.docker.com/_/mysql/tags/manage/), [Postgres](https://registry.hub.docker.com/_/postgres/tags/manage/), [MariaDB](https://registry.hub.docker.com/_/mariadb/tags/manage/) and [oracle 11g](https://registry.hub.docker.com/u/wnameless/oracle-xe-11g/)  
    3. A container running an `alfresco` instance. This container will link to 2. and mount the volume published on 1. 
    
 To run a stack to phases are applied:
@@ -74,6 +74,9 @@ Examples:
 * `bash ./scs.sh mariadb 10.0.15 toto alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1`
+* `bash ./scs.sh oracle 11g titi alfresco-5.0.1.a 5.0.1`
+
+Note: only oracle 11g is available
 
 ## Verifying that your stack is up and running
 

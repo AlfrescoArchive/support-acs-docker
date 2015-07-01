@@ -35,6 +35,7 @@ if [ "$1" == "mysql" ]; then
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
         export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+        export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
 if [ "$1" == "mariadb" ]; then
@@ -55,6 +56,7 @@ if [ "$1" == "mariadb" ]; then
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
         export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+        export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
 if [ "$1" == "postgres" ]; then
@@ -70,9 +72,34 @@ if [ "$1" == "postgres" ]; then
 	export DB_USERNAME='db.username.EQ.postgres'
 	export DB_PASSWORD='db.password.EQ.mysecretpassword'
 	export DB_NAME='db.name.EQ.alfresco'
-        DB_URL='db.url.EQ.jdbc:postgresql:\/\/${db.host}:${db.port}\/${db.name}'
+        export DB_URL='db.url.EQ.jdbc:postgresql:\/\/${db.host}:${db.port}\/${db.name}'
+        export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
+if [ "$1" == "oracle" ]; then
+    	echo "Starting up with Oracle!"
+        export CONTAINER_TO_LINK_TO="Oracle_$3"
+        export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO"
+        docker run --name $CONTAINER_TO_LINK_TO -d  wnameless/oracle-xe-11g
+# get the id of the container
+        export CONTAINER_ORACLE_ID=`sudo docker ps | grep $CONTAINER_TO_LINK_TO | awk -F" " '{print $1}'`
+        echo "CONTAINER_ORACLE_ID:$CONTAINER_ORACLE_ID"
+        sleep 60
+        echo "Finished sleeping!"
+        docker exec  -i $CONTAINER_ORACLE_ID /bin/bash  < ./db_scripts/oracle/create.sql
+        export DB_DRIVER='db.driver.EQ.oracle.jdbc.OracleDriver'
+#The oracle address in the linked container structure is ORACLE_$3__PORT_1521_TCP_ADDR
+        export CONTAINER_TO_LINK_TO_UPPER_CASE="${CONTAINER_TO_LINK_TO^^}"
+        export STACK_NAME_TO_UPPER_CASE="${3^^}"
+	export DB_HOST="db.host.EQ.ORACLE_${STACK_NAME_TO_UPPER_CASE}_PORT_1521_TCP_ADDR"
+        echo "DB_HOST=$DB_HOST"
+	export DB_PORT='db.port.EQ.1521'
+	export DB_USERNAME='db.username.EQ.alfresco'
+	export DB_PASSWORD='db.password.EQ.alfresco'
+	export DB_NAME='db.name.EQ.XE'
+        export DB_URL='db.url.EQ.jdbc:oracle:thin:@${db.host}:${db.port}:${db.name}'
+        export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1 from dual'
+fi
 sleep 5
 echo "Starting Alfresco!"
 # docker run -t -i -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3 \
@@ -108,6 +135,7 @@ docker run -d -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3 \
 -e ALF_27=$DB_PASSWORD \
 -e ALF_28=$DB_NAME \
 -e ALF_29=$DB_URL \
+-e ALF_30="$DB_POOL_VALIDATE" \
 $4
 
 
