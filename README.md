@@ -81,7 +81,7 @@ Examples:
  
  `CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES`
  
- `42bb34baae8c        alfresco5011        "/bin/sh -c '/entry.   45 minutes ago      Up 45 minutes       <b>0.0.0.0:32771->8443/tcp</b>   deamon`
+ `42bb34baae8c        alfresco5011        "/bin/sh -c '/entry.   45 minutes ago      Up 45 minutes       0.0.0.0:32771->8443/tcp   deamon`
  
  `54dadba305ea        postgres:9.3.5      "/docker-entrypoint.   45 minutes ago      Up 45 minutes       5432/tcp                  Postgres_deamon`
  
