@@ -75,7 +75,8 @@ fi
 
 sleep 5
 echo "Starting Alfresco!"
-docker run -t -i -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3 \
+# docker run -t -i -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3 \
+docker run -d -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3 \
 --volumes-from alf_data-$3 \
 -d -e INITAL_PASS=admun \
 -e ALF_1=mail.host.EQ.smtp.gmail.com \

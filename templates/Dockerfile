@@ -51,7 +51,7 @@ RUN   /opt/alfresco-__version__/bin/apply_amps_unatended.sh
 # configure for allowing and managing correctly user names containing '@', see http://docs.alfresco.com/4.2/tasks/usernametypes-mix-config.html
 COPY  ./custom-surf-application-context.xml /
 RUN   mv /custom-surf-application-context.xml /opt/alfresco-__version__/tomcat/shared/classes/alfresco/web-extension
-ENTRYPOINT /entry.sh;/opt/alfresco-__version__/alfresco.sh start;bash
-
+# ENTRYPOINT /entry.sh;/opt/alfresco-__version__/alfresco.sh start;bash
+ENTRYPOINT /entry.sh;/opt/alfresco-__version__/alfresco.sh start;while true; do ps -a; sleep 5; done
 
 
