@@ -77,20 +77,92 @@ Examples:
 
 ## Verifying that your stack is up and running
 
- `$ sudo docker ps`
- 
- `CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES`
- 
- `42bb34baae8c        alfresco5011        "/bin/sh -c '/entry.   45 minutes ago      Up 45 minutes       0.0.0.0:32771->8443/tcp   deamon`
- 
- `54dadba305ea        postgres:9.3.5      "/docker-entrypoint.   45 minutes ago      Up 45 minutes       5432/tcp                  Postgres_deamon`
- 
+```
+
+$sudo docker ps
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+42bb34baae8c        alfresco5011        "/bin/sh -c '/entry.   45 minutes ago      Up 45 minutes       0.0.0.0:32771->8443/tcp   deamon
+54dadba305ea        postgres:9.3.5      "/docker-entrypoint.   45 minutes ago      Up 45 minutes       5432/tcp                  Postgres_deamon
+``` 
  
  You can observe that 2 containers are runnig, `42bb34baae8c` is used to run `alfresco`, `54dadba305ea` is used to to run `postgres`
  
 ### Ho can I connect to my alfresco instance using browser?
 
 From the above output, you can observe that alfresco ssl port 8443 is mapped to port 32771 on your host. By browing "https://<your host>:32771/share you will get login to share.
+
+### How can I obtain full information set in json of my running containsers?
+
+```
+
+$ sudo docker inspect 42bb34baae8c
+[
+{
+    "Id": "42bb34baae8cabaf0ec9457082384349c1dc587a5084cdf0a0a46356afb87ab1",
+    "Created": "2015-07-01T01:34:08.8153281Z",
+    "Path": "/bin/sh",
+    "Args": [
+        "-c",
+        "/entry.sh;/opt/alfresco-5.0.1/alfresco.sh start;while true; do ps -a; sleep 5; done"
+    ],
+    "State": {
+        "Running": true,
+        "Paused": false,
+        "Restarting": false,
+        "OOMKilled": false,
+        "Dead": false,
+        "Pid": 49638,
+        "ExitCode": 0,
+        "Error": "",
+        "StartedAt": "2015-07-01T01:34:09.342686165Z",
+        "FinishedAt": "0001-01-01T00:00:00Z"
+    },
+    "Image": "27ae52d443b5408ff2179d8886983ad617065385eb376dd244d85f6f64edd770",
+    "NetworkSettings": {
+        "Bridge": "",
+ "LinkLocalIPv6PrefixLen": 0,
+        "MacAddress": "02:42:ac:11:00:a6",
+        "NetworkID": "cd84417120e19444a38d653f24d73ae1a36bc55cdd3453196bfec02274ccc836",
+        "PortMapping": null,
+        "Ports": {
+            "8443/tcp": [
+                {
+                    "HostIp": "0.0.0.0",
+                    "HostPort": "32771"
+                }
+            ]
+        },
+        "SandboxKey": "/var/run/docker/netns/42bb34baae8c",
+        "SecondaryIPAddresses": null,
+        "SecondaryIPv6Addresses": null
+    },
+
+...
+
+            "ALF_28=db.name.EQ.alfresco",
+            "ALF_29=db.url.EQ.jdbc:postgresql:\\/\\/${db.host}:${db.port}\\/${db.name}",
+            "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+        ],
+        "Cmd": null,
+        "Image": "alfresco5011",
+        "Volumes": null,
+        "VolumeDriver": "",
+        "WorkingDir": "",
+        "Entrypoint": [
+            "/bin/sh",
+            "-c",
+            "/entry.sh;/opt/alfresco-5.0.1/alfresco.sh start;while true; do ps -a; sleep 5; done"
+        ],
+        "NetworkDisabled": false,
+        "MacAddress": "",
+        "OnBuild": null,
+        "Labels": {}
+    }
+}
+]
+```
+
+
  
 ### How to connect to the alfresco container using using shell command on a TTY?
  
