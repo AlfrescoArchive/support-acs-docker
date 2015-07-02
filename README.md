@@ -191,6 +191,55 @@ $ sudo docker inspect 42bb34baae8c
 
  You can observe that an alfresco process it up and running 
 
+## Disk space management, caveat!!
+
+Using docker and creating many containers might be space consuming even if containers are stopped and deleted. The solution is to use the option **_-v_** when removing containers in order to recuperate disk space space.
+
+Example:
+
+```
+
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ sudo bash ./scs.sh mariadb 10.0.15 iphone5 alfresco5014 5.0.1
+[sudo] password for philippe: 
+You are starting with DB: mariadb, Instance name: iphone5, Docker Image: alfresco5014
+Creating volume /opt/alfresco-5.0.1/alf_data shared under name alf_data-iphone5
+86a21bcf231d2a3b9c1a8881db78798f7f16ccf29a9450b1a968001aaad9f785
+Starting up with MariaDB!
+5e6f80fc2bd8b5951a45c2e007c155c688fe74818ae04dfc75710bc91d5bb541
+If there is no database initialized when the container starts, then a default database will be created. While this is the expected 
+behavior, this means that it will not accept incoming connections until such initialization
+Sleeping 30 secs waiting for initialization !!!
+Database
+information_schema
+mysql
+performance_schema
+Database
+alfresco
+information_schema
+mysql
+performance_schema
+Database created!
+Starting Alfresco!
+d7c22b29e94ebf98ef4f0ef90cd0741ad4700b63cb995edee442f646d6652b03
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ sudo docker ps -a
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+d7c22b29e94e        alfresco5014        "/bin/sh -c '/entry.   15 seconds ago      Up 14 seconds       0.0.0.0:32798->8443/tcp   iphone5             
+5e6f80fc2bd8        mariadb:10.0.15     "/docker-entrypoint.   50 seconds ago      Up 50 seconds       3306/tcp                  MariaDB_iphone5     
+86a21bcf231d        alfresco5014        "/bin/sh -c '/entry.   51 seconds ago                                                    alf_data-iphone5    
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ 
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ sudo docker stop d7c22b29e94e 5e6f80fc2bd8
+d7c22b29e94e
+5e6f80fc2bd8
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ sudo docker rm -v 86a21bcf231d 5e6f80fc2bd8 d7c22b29e94e
+86a21bcf231d
+5e6f80fc2bd8
+d7c22b29e94e
+```
+
+Why is is necessary to use the **_-v_** option?
+The explanation can be found [here:](https://docs.docker.com/userguide/dockervolumes/)
+
+Please note paragraph “Creating and mounting a data volume container” and the note that is associated to. (see also: [pull request #8484](https://github.com/docker/docker/pull/8484 )
 
 ## Installion guide of docker on RHEL 7.1
 
