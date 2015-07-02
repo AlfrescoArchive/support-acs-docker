@@ -1,18 +1,19 @@
 # param1: db type
 # param2: tag of the DB
-# param3: instance name  (e.g. myalfresco or philalfresco5005)
-# param4: image name: e.g. alfresco-5.0.1.a,alfresco5005, alfresco501
+# param3: stack instance name  (e.g. myalfresco or philalfresco5005)
+# param4: alfresco image name: e.g. alfresco-5.0.1.a,alfresco5005, alfresco501
 # param5: version eg: 5.0.1
 # Example: bash ./scs.sh mariadb 10.0.15 toto alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1
 echo "You are starting with DB: $1, Instance name: $3, Docker Image: $4"
 
-# create a volume sharing content that can be shared amongst cluster
+# create a volume sharing content that can be shared amongst cluster or 
+# stateless alfresco containter.
 # Note: Important for upgrade tests. 
 #       For upgrades it is important to have a "stateless" deployement of alfresco.
 #       Also deploying DB in a separate container.
-#       It also make possible clustering testing that needs to share content.
+#       It also makes possible clustering testing that needs to share content.
 echo "Creating volume /opt/alfresco-$5/alf_data shared under name alf_data-$3"
 docker create -v /opt/alfresco-$5/alf_data --name alf_data-$3 $4 /bin/true
 
@@ -136,6 +137,9 @@ docker run -d -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3 \
 -e ALF_28=$DB_NAME \
 -e ALF_29=$DB_URL \
 -e ALF_30="$DB_POOL_VALIDATE" \
+-e ALF_31=ooo.enabled.EQ.false \
+-e ALF_32=jodconverter.enabled.EQ.true \
+-e ALF_33=jodconverter.portNumbers.EQ.2022,2023,2024 \
 $4
 
 
