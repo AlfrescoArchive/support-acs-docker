@@ -237,9 +237,9 @@ d7c22b29e94e
 ```
 
 Why is is necessary to use the **_-v_** option?
-The explanation can be found [here:](https://docs.docker.com/userguide/dockervolumes/)
+The explanation can be found [here](https://docs.docker.com/userguide/dockervolumes/)
 
-Please note paragraph “Creating and mounting a data volume container” and the note that is associated to. (see also: [pull request #8484](https://github.com/docker/docker/pull/8484 )
+Please note paragraph “Creating and mounting a data volume container” and the note that is associated to. (see also: [pull request #8484](https://github.com/docker/docker/pull/8484 ))
 
 ## Installion guide of docker on RHEL 7.1
 
