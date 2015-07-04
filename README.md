@@ -241,6 +241,89 @@ The explanation can be found [here](https://docs.docker.com/userguide/dockervolu
 
 Please note paragraph “Creating and mounting a data volume container” and the note that is associated to. (see also: [pull request #8484](https://github.com/docker/docker/pull/8484 ))
 
+
+### Where are your index and content located and how to find it in your file system?
+
+Answer: 
+
+Your content and index are located in a “data volume” in when the “stack” is started using command “/scs.sh” ommiting options $6 and $7 (ommiting $6 and $7 is ommiting any preferate location). Data volume are containers
+dedicated to data storage. The choice made in this project is to not run data volumes, they are created using the "docker create" command. To understand more about data volumes, please refer to [docker volumes](https://docs.docker.com/userguide/dockervolumes/)
+
+Assume that you have a running stack:
+
+```
+
+$ sudo docker ps -a
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+7b1431672f5a        alfresco5013        "/bin/sh -c '/entry.   About an hour ago   Up About an hour    0.0.0.0:32824->8443/tcp   garlic              
+5873c7f73e1b        postgres:9.3.5      "/docker-entrypoint.   About an hour ago   Up About an hour    5432/tcp                  Postgres_garlic     
+c09fedb3135d        alfresco5013        "/bin/sh -c '/entry.   About an hour ago                                                 alf_data-garlic     
+root@ubuntu:/var/lib/docker# 
+```
+
+Searching for the volumes used by your “alfresco” container being part of the running stack can be done as follows:
+
+```
+
+$ sudo docker inspect -f {{.Volumes}} 7b1431672f5a
+map[/opt/alfresco-5.0.1.3/alf_data/solr4/index:/var/lib/docker/volumes/f127e8b86b306fd9c0a87a6b5b91427ef9f166823e9b92a5dd2ff26b2f109ea3/_data /opt/alfresco-5.0.1.3/alf_data/contentstore:/var/lib/docker/volumes/32cbfe33e0e9dfbbd862cea89fa963e8ad78f11368d0eb216fe8911ff4df3ca0/_data]
+```
+
+Alternatively, the container name “garlic” to identify the volumes location on disk.
+
+```
+
+$ sudo docker inspect -f {{.Volumes}} garlic
+map[/opt/alfresco-5.0.1.3/alf_data/contentstore:/var/lib/docker/volumes/32cbfe33e0e9dfbbd862cea89fa963e8ad78f11368d0eb216fe8911ff4df3ca0/_data /opt/alfresco-5.0.1.3/alf_data/solr4/index:/var/lib/docker/volumes/f127e8b86b306fd9c0a87a6b5b91427ef9f166823e9b92a5dd2ff26b2f109ea3/_data]
+```
+
+You can observe that /opt/alfresco-5.0.1.3/alf_data/solr4/index from inside your container is mapped to /var/lib/docker/volumes/f127e8b86b306fd9c0a87a6b5b91427ef9f166823e9b92a5dd2ff26b2f109ea3/_data
+
+and 
+
+/opt/alfresco-5.0.1.3/alf_data/contentstore
+
+is mapped to /var/lib/docker/volumes/32cbfe33e0e9dfbbd862cea89fa963e8ad78f11368d0eb216fe8911ff4df3ca0/_data
+
+
+It can also be cross checked by doing the “ls” ot the 2 directories:
+
+```
+
+$ ls -la /var/lib/docker/volumes/f127e8b86b306fd9c0a87a6b5b91427ef9f166823e9b92a5dd2ff26b2f109ea3/_data
+total 16
+drwxr-xr-x 4 root root 4096 Jul  4 00:55 .
+drwxr-xr-x 3 root root 4096 Jul  4 00:54 ..
+drwxr-xr-x 3 root root 4096 Jul  4 00:55 archive
+drwxr-xr-x 3 root root 4096 Jul  4 00:55 workspace
+```
+
+```
+
+$ ls -la /var/lib/docker/volumes/32cbfe33e0e9dfbbd862cea89fa963e8ad78f11368d0eb216fe8911ff4df3ca0/_data
+total 12
+drwxr-xr-x 3 root root 4096 Jul  4 00:57 .
+drwxr-xr-x 3 root root 4096 Jul  4 00:54 ..
+drwxr-xr-x 3 root root 4096 Jul  4 00:57 2015
+```
+
+### How content and index can be on different locations?
+
+It is common with Alfresco to locate index on fast local disk and content on slower network drives. The specific locations can be 
+specified respectively by providing optional parameters $6 and $7
+
+Example:
+
+```
+
+# sudo bash ./scs.sh postgres 9.3.5 carot alfresco5013 5.0.1.3 /home/philippe/my_content_store /home/philippe/my_index
+```
+
+In the example above, the index will be located under  “/home/philippe/my_index” and the content will be located under “/home/philippe/my_index”.
+
+Note: If you decide to remove the “alfresco” container or the “content container” referencing “/home/philippe/my_index” and “/home/philippe/my_index” using “sudo rm -v <container name or container location>”, data in it will be preserved.
+
+
 ## Installion guide of docker on RHEL 7.1
 
 ### installing docker

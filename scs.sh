@@ -6,7 +6,22 @@
 # Example: bash ./scs.sh mariadb 10.0.15 toto alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1
+#          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store
+#          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index
 echo "You are starting with DB: $1, Instance name: $3, Docker Image: $4"
+
+export CONTENT_LOCATION=" -v /opt/alfresco-$5/alf_data/contentstore "
+export INDEX_LOCATION=" -v /opt/alfresco-$5/alf_data/solr4/index "
+
+if [ -n "$6" ]; then
+    export CONTENT_LOCATION="-v $6:/opt/alfresco-$5/alf_data/contentstore"
+
+fi
+     
+if [ -n "$7" ]; then
+      export INDEX_LOCATION="-v $7:/opt/alfresco-$5/alf_data/solr4/index"
+fi
+
 
 # create a volume sharing content that can be shared amongst cluster or 
 # stateless alfresco containter.
@@ -15,7 +30,9 @@ echo "You are starting with DB: $1, Instance name: $3, Docker Image: $4"
 #       Also deploying DB in a separate container.
 #       It also makes possible clustering testing that needs to share content.
 echo "Creating volume /opt/alfresco-$5/alf_data shared under name alf_data-$3"
-docker create -v /opt/alfresco-$5/alf_data --name alf_data-$3 $4 /bin/true
+# docker create -v /home/philippe/my_content_store:/opt/alfresco-$5/alf_data/contentstore -v /home/philippe/my_index:/opt/alfresco-$5/alf_data/solr4/index --name alf_data-$3 $4 /bin/true
+# docker create -v /opt/alfresco-$5/alf_data/contentstore -v /opt/alfresco-$5/alf_data/solr4/index --name alf_data-$3 $4 /bin/true
+docker create $CONTENT_LOCATION $INDEX_LOCATION --name alf_data-$3 $4 /bin/true
 
 
 if [ "$1" == "mysql" ]; then
