@@ -246,7 +246,7 @@ Please note paragraph “Creating and mounting a data volume container” and th
 
 Answer: 
 
-Your content and index are located in a “data volume” in when the “stack” is started using command “/scs.sh” ommiting options $6 and $7 (ommiting $6 and $7 is ommiting any preferate location). Data volume are containers
+Your content and index are located in a “data volume” when the “stack” is started using command “/scs.sh” ommiting options $6 and $7 (ommiting $6 and $7 is ommiting any preferate location). Data volume are containers
 dedicated to data storage. The choice made in this project is to not run data volumes, they are created using the "docker create" command. To understand more about data volumes, please refer to [docker volumes](https://docs.docker.com/userguide/dockervolumes/)
 
 Assume that you have a running stack:
@@ -269,11 +269,11 @@ $ sudo docker inspect -f {{.Volumes}} 7b1431672f5a
 map[/opt/alfresco-5.0.1.3/alf_data/solr4/index:/var/lib/docker/volumes/f127e8b86b306fd9c0a87a6b5b91427ef9f166823e9b92a5dd2ff26b2f109ea3/_data /opt/alfresco-5.0.1.3/alf_data/contentstore:/var/lib/docker/volumes/32cbfe33e0e9dfbbd862cea89fa963e8ad78f11368d0eb216fe8911ff4df3ca0/_data]
 ```
 
-Alternatively, the container name “garlic” to identify the volumes location on disk.
+Alternatively, the container name “garlic” (See column "NAMES" from the output of the above command) to identify the volumes location on disk can be used.
 
 ```
 
-$ sudo docker inspect -f {{.Volumes}} garlic
+$ sudo docker inspect -f {{.Volumes}} garlic 
 map[/opt/alfresco-5.0.1.3/alf_data/contentstore:/var/lib/docker/volumes/32cbfe33e0e9dfbbd862cea89fa963e8ad78f11368d0eb216fe8911ff4df3ca0/_data /opt/alfresco-5.0.1.3/alf_data/solr4/index:/var/lib/docker/volumes/f127e8b86b306fd9c0a87a6b5b91427ef9f166823e9b92a5dd2ff26b2f109ea3/_data]
 ```
 
