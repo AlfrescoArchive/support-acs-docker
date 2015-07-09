@@ -59,7 +59,7 @@ docker build -t &lt;image name&gt; ./generated
 ## Running the stack
 
 
-./scs.sh &lt;param1> &lt;param2&gt; &lt;param3&gt; &lt;param4&gt; &lt;param5&gt;
+./scs.sh &lt;param1> &lt;param2&gt; &lt;param3&gt; &lt;param4&gt; &lt;param5&gt; &lt;param6&gt; &lt;param7&gt;
 
 Prameter description:
 
@@ -68,6 +68,8 @@ Prameter description:
 *  param3: instance name  (e.g. myalfresco or philalfresco5005)
 *  param4: image name: e.g. alfresco-5.0.1.a,alfresco5005, alfresco501
 *  param5: version eg: 5.0.1
+*  param6: location of content store outside container
+*  param7: location of index outside of container
   
 Examples: 
 
@@ -75,6 +77,7 @@ Examples:
 * `bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh oracle 11g titi alfresco-5.0.1.a 5.0.1`
+* `bash ./scs.sh postgres 9.3.5 carot alfresco5013 5.0.1.3 /home/philippe/my_content_store /home/philippe/my_index`
 
 Note: only oracle 11g is available
 
