@@ -12,7 +12,7 @@ RUN   rm ./alfresco-enterprise-__version__-installer-linux-x64.bin
 # copy the license
 COPY ./license/*.lic /
 RUN   mkdir /opt/alfresco-__version__/tomcat/shared/classes/alfresco/extension/license
-RUN   mv *.lic /opt/alfresco-__version__/tomcat/shared/classes/alfresco/extension/license
+# RUN   mv *.lic /opt/alfresco-__version__/tomcat/shared/classes/alfresco/extension/license
 # make root readable by others
 RUN   chmod go+r /root
 COPY  passencode.py /

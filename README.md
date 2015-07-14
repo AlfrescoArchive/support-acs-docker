@@ -326,6 +326,143 @@ In the example above, the index will be located under  “/home/philippe/my_inde
 
 Note: If you decide to remove the “alfresco” container or the “content container” referencing “/home/philippe/my_index” and “/home/philippe/my_index” using “sudo rm -v <container name or container location>”, data in it will be preserved.
 
+## Backuping and restoring
+
+To backup the content, index and database use the "backup.sh" script. This is a cold backup that is performed, alfresco is stopped before backuping.
+Assume that "backup.sh" is in your classpath and that you have a stack called "pinapple" that you would like to backup in another stack called "pinapple2".
+
+```
+
+backup.sh <stack name> <version>
+```
+
+```
+
+$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+8976abb11bf7        alfresco502         "/bin/sh -c '/entry.   23 seconds ago      Up 22 seconds       0.0.0.0:32775->8443/tcp   pinapple            
+d5c5dd6375c9        mysql:5.6.17        "/entrypoint.sh mysq   59 seconds ago      Up 58 seconds       3306/tcp                  MySQL_pinapple      
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ 
+```
+
+Step 1:
+Create a folder where the backup files will be created.
+
+```
+
+$ mkdir backup
+$ cd bacup
+$ 
+```
+Step 2:
+Execute the "backup.sh" 
+
+```
+$ sudo bash ../backup.sh pinapple 5.0.2
+true
+Stoping container name: pinapple
+Waiting 10 sec before killing!
+pinapple
+Warning: Using a password on the command line interface can be insecure.
+tar: Removing leading `/' from member names
+/opt/alfresco-5.0.2/alf_data/solr4/index/
+/opt/alfresco-5.0.2/alf_data/solr4/index/workspace/
+/opt/alfresco-5.0.2/alf_data/solr4/index/workspace/SpacesStore/
+/opt/alfresco-5.0.2/alf_data/solr4/index/workspace/SpacesStore/index/
+/opt/alfresco-5.0.2/alf_data/solr4/index/workspace/SpacesStore/index/_1_Lucene41_0.pos
+
+... 
+
+/opt/alfresco-5.0.2/alf_data/solr4/index/archive/SpacesStore/index/_0_Lucene41_0.doc
+tar: Removing leading `/' from member names
+/opt/alfresco-5.0.2/alf_data/contentstore/
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/7/
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/14/
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/14/38/
+...
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/14/37/b66abf3d-37e8-420f-8ccd-dfbc431da9e4.bin
+/opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/14/37/45e3c138-09f3-4024-8fc4-6dea4b44dd32.bin
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker/backup$ 
+$ ls
+content.tar  database.sql  index.tar
+$
+
+```
+
+Step 3:
+Create stack called "pinapple2"
+
+```
+
+$ sudo bash ./scs.sh mysql 5.6.17 pinapple2 alfresco502 5.0.2
+You are starting with DB: mysql, Instance name: pinapple2, Docker Image: alfresco502
+Creating volume /opt/alfresco-5.0.2/alf_data shared under name alf_data-pinapple2
+8aebfa547e502d4e5f74209f39b3cd2fd3d1d2e86137420125bac7498b355f25
+Starting up with MySQL!
+0c0cdd4e4ae5a0e5c0f7069715e8eacc5f1e0b0fa7bc79c620c315836e83b9f4
+If there is no database initialized when the container starts, then a default database will be created. While this is the expected 
+behavior, this means that it will not accept incoming connections until such initialization
+Sleeping 30 secs waiting for initialization !!!
+Warning: Using a password on the command line interface can be insecure.
+Database created!
+Starting Alfresco!
+8e7fd04e903ee56908b3180362287001e7dc93b56fada2e7bfca8701472dc50c
+$ sudo docker ps
+[sudo] password for philippe: 
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+8e7fd04e903e        alfresco502         "/bin/sh -c '/entry.   18 minutes ago      Up 18 minutes       0.0.0.0:32776->8443/tcp   pinapple2           
+0c0cdd4e4ae5        mysql:5.6.17        "/entrypoint.sh mysq   18 minutes ago      Up 18 minutes       3306/tcp                  MySQL_pinapple2     
+d5c5dd6375c9        mysql:5.6.17        "/entrypoint.sh mysq   40 minutes ago      Up 40 minutes       3306/tcp                  MySQL_pinapple      
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker$ 
+```
+
+Step  4:
+Restore the backup in the newly created stack "pinaple2".
+
+```
+
+restore.sh <stack name> <version>
+```
+
+```
+
+$ sudo bash  ../restore.sh pinapple2 5.0.2
+opt/alfresco-5.0.2/alf_data/solr4/index/
+opt/alfresco-5.0.2/alf_data/solr4/index/workspace/
+opt/alfresco-5.0.2/alf_data/solr4/index/workspace/SpacesStore/
+...
+opt/alfresco-5.0.2/alf_data/solr4/index/archive/SpacesStore/index/_0_Lucene41_0.doc
+opt/alfresco-5.0.2/alf_data/contentstore/
+opt/alfresco-5.0.2/alf_data/contentstore/2015/
+opt/alfresco-5.0.2/alf_data/contentstore/2015/7/
+...
+opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/14/37/b66abf3d-37e8-420f-8ccd-dfbc431da9e4.bin
+opt/alfresco-5.0.2/alf_data/contentstore/2015/7/14/14/37/45e3c138-09f3-4024-8fc4-6dea4b44dd32.bin
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+Warning: Using a password on the command line interface can be insecure.
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker/backup$ 
+```
+
+Step 5:
+Restart "pinapple2".
+
+```
+
+$ sudo docker start pinapple2
+pinapple2
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker/backup$ sudo docker ps
+CONTAINER ID        IMAGE               COMMAND                CREATED             STATUS              PORTS                     NAMES
+8e7fd04e903e        alfresco502         "/bin/sh -c '/entry.   40 minutes ago      Up 6 seconds        0.0.0.0:32777->8443/tcp   pinapple2           
+0c0cdd4e4ae5        mysql:5.6.17        "/entrypoint.sh mysq   41 minutes ago      Up 41 minutes       3306/tcp                  MySQL_pinapple2          
+philippe@ubuntu:~/on-docker-mogwaii3/on-docker/backup$
+```
+
+
+
+
 
 ## Installion guide of docker on RHEL 7.1
 
