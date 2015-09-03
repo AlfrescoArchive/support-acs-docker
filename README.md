@@ -80,7 +80,7 @@ Examples:
 * `bash ./scs.sh oracle 11g titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh postgres 9.3.5 carot alfresco5013 5.0.1.3 /home/philippe/my_content_store /home/philippe/my_index`
 * `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index m0`
-* `bash ./scs.sh oracle 9.3.5 carpacio alfresco501 5.0.1 /home/philippe/my_content_store /home/philippe/my_index1 m0`
+* `bash ./scs.sh oracle 9.3.5 carpaccio alfresco501 5.0.1 /home/philippe/my_content_store /home/philippe/my_index1 m0`
 
 Note: only oracle 11g is available
 
