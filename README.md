@@ -70,6 +70,7 @@ Prameter description:
 *  param5: version eg: 5.0.1
 *  param6: location of content store outside container
 *  param7: location of index outside of container
+*  param8: cluster member suffix identifying the cluster member
   
 Examples: 
 
@@ -78,6 +79,7 @@ Examples:
 * `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh oracle 11g titi alfresco-5.0.1.a 5.0.1`
 * `bash ./scs.sh postgres 9.3.5 carot alfresco5013 5.0.1.3 /home/philippe/my_content_store /home/philippe/my_index`
+* `bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index m0`
 
 Note: only oracle 11g is available
 
@@ -460,7 +462,19 @@ CONTAINER ID        IMAGE               COMMAND                CREATED          
 philippe@ubuntu:~/on-docker-mogwaii3/on-docker/backup$
 ```
 
+## Clustering capabilities
 
+Assume that you have started a stack using the `scs.sh` command like this:
+
+  `# sudo bash ./scs.sh mysql 5.6.17 carpacio alfresco501 5.0.1 /home/philippe/my_content_store /home/philippe/my_index1 m0`
+
+The last parameter identifies the fist cluster member that was  started. The “scs.sh” command creates a docker container used only to share volumes, a container for the DB and a container for Alfresco. 
+
+The subsequent cluster members must be started using “ acm.sh” (Add Cluster Member). The parameters are identical to the “scs.sh” command excepted the member identifier (last parameter). 
+
+Example:
+
+  `# sudo bash ./acm.sh mysql 5.6.17 carpacio alfresco501 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m1`
 
 
 
