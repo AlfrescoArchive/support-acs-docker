@@ -11,17 +11,24 @@
 # param5: version eg: 5.0.1
 # param6: content location
 # param7: index location
-# param8: cluster member suffix 
+# param8: cluster member suffix
+# param9: Mysql data location 
 # Example: bash ./scs.sh mariadb 10.0.15 toto alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1
 #          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store
 #          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index m0
+#          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index m0 /home/philippe/mysql-data
 echo "You are starting with DB: $1, Instance name: $3, Docker Image: $4"
 
 
 export CONTENT_LOCATION=" -v /opt/alfresco-$5/alf_data/contentstore "
 export INDEX_LOCATION=" -v /opt/alfresco-$5/alf_data/solr4/index "
+# Specific datacontainer forMySQL
+# NOTE: only implemented for MySQL 
+# 
+export MYSQL_DATA_CONTAINER=""
+  
 
 if [ -n "$6" ]; then
     export CONTENT_LOCATION="-v $6:/opt/alfresco-$5/alf_data/contentstore"
@@ -37,6 +44,14 @@ export CLUSTER_MEMBER_SUFFIX="m0"
 if [ -n "$8" ]; then
       export CLUSTER_MEMBER_SUFFIX="$8"
 fi
+
+if [ -n "$9" ]; then
+# create a pure data container used only for Mysql
+     export MYSQL_DATA_LOCATION=" -v $9:/var/lib/mysql"
+     docker create $MYSQL_DATA_LOCATION --name mysql_data-$3 $4 /bin/true   
+     export MYSQL_DATA_CONTAINER=" --volumes-from mysql_data-$3" 
+fi
+
 
 
 
@@ -56,7 +71,7 @@ if [ "$1" == "mysql" ]; then
     	echo "Starting up with MySQL!"
         export CONTAINER_TO_LINK_TO="MySQL_$3"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:mysql"
-	docker run --name $CONTAINER_TO_LINK_TO -e MYSQL_ROOT_PASSWORD=alfresco -d mysql:$2
+	docker run --name $CONTAINER_TO_LINK_TO $MYSQL_DATA_CONTAINER -e MYSQL_ROOT_PASSWORD=alfresco -d mysql:$2
         echo "If there is no database initialized when the container starts, then a default database will be created. While this is the expected "
         echo "behavior, this means that it will not accept incoming connections until such initialization"
         echo "Sleeping 30 secs waiting for initialization !!!" 
