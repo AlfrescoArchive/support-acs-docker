@@ -1,4 +1,6 @@
 # setting values for all the "-e ALF_xxx=..." parameters provided at startup
+# add a new line first
+echo  "" >> "/opt/alfresco-__version__/tomcat/shared/classes/alfresco-global.properties"
 for thing in `env`
 do
  if [[ $thing == ALF* ]]; then

@@ -4,10 +4,10 @@ RUN   apt-get update
 RUN   apt-get install -y --no-install-recommends ubuntu-desktop
 RUN   apt-get update
 RUN   apt-get install -y wget
-# RUN   wget http://dl.alfresco.com/release/community/5.0.c-build-00145/alfresco-community-5.0.c-installer-linux-x64.bin
 COPY  ./alfresco-enterprise-__version__-installer-linux-x64.bin /
 RUN   chmod +x ./alfresco-enterprise-__version__-installer-linux-x64.bin
-RUN   ./alfresco-enterprise-__version__-installer-linux-x64.bin --mode unattended --alfresco_admin_password admin --disable-components alfrescogoogledocs,postgres 
+RUN   ./alfresco-enterprise-__version__-installer-linux-x64.bin --mode unattended --alfresco_admin_password admin --disable-components alfrescogoogledocs,postgres
+# RUN   mv /opt/alfresco-one /opt/alfresco-__version__ 
 RUN   rm ./alfresco-enterprise-__version__-installer-linux-x64.bin
 # copy the license
 COPY ./license/*.lic /
