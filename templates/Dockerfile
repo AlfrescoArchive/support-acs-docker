@@ -1,12 +1,13 @@
 FROM ubuntu
 MAINTAINER Philippe Dubois
+ENV DEBIAN_FRONTEND noninteractive
 RUN   apt-get update
 RUN   apt-get install -y --no-install-recommends ubuntu-desktop
 RUN   apt-get update
 RUN   apt-get install -y wget
 COPY  ./alfresco-enterprise-__version__-installer-linux-x64.bin /
 RUN   chmod +x ./alfresco-enterprise-__version__-installer-linux-x64.bin
-RUN   ./alfresco-enterprise-__version__-installer-linux-x64.bin --mode unattended --alfresco_admin_password admin --disable-components alfrescogoogledocs,postgres
+RUN   ./alfresco-enterprise-__version__-installer-linux-x64.bin --mode unattended --alfresco_admin_password admin --disable-components postgres --prefix /opt/alfresco-__version__
 # RUN   mv /opt/alfresco-one /opt/alfresco-__version__ 
 RUN   rm ./alfresco-enterprise-__version__-installer-linux-x64.bin
 # copy the license
