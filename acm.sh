@@ -7,11 +7,11 @@
 # param6: content location
 # param7: index location
 # param8: cluster member suffix 
-# Example: bash ./scs.sh mariadb 10.0.15 toto alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
-#          bash ./scs.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
-#          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
-#          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
-#          bash ./scs.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
+# Example: bash ./acm.sh mariadb 10.0.15 toto alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
+#          bash ./acm.sh mysql 5.6.17 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
+#          bash ./adm.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
+#          bash ./acm.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
+#          bash ./acm.sh postgres 9.3.5 titi alfresco-5.0.1.a 5.0.1 /home/philippe/my_content_store /home/philippe/my_index2 m2
 echo "You are going to connect to DB: $1, Instance name: $3, Docker Image: $4"
 
 export CONTENT_LOCATION=" -v /opt/alfresco-$5/alf_data/contentstore "
@@ -49,8 +49,10 @@ if [ "$1" == "mysql" ]; then
         export CONTAINER_TO_LINK_TO="MySQL_$3"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:mysql"
         export DB_DRIVER='db.driver.EQ.org.gjt.mm.mysql.Driver'
-	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
-	export DB_PORT='db.port.EQ.MYSQL_PORT_3306_TCP_PORT'
+#	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
+	export DB_HOST="db.host.EQ.$CONTAINER_TO_LINK_TO"
+#	export DB_PORT='db.port.EQ.MYSQL_PORT_3306_TCP_PORT'
+	export DB_PORT='db.port.EQ.3306'
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
@@ -63,8 +65,10 @@ if [ "$1" == "mariadb" ]; then
         export CONTAINER_TO_LINK_TO="MariaDB_$3"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:mysql"
         export DB_DRIVER='db.driver.EQ.org.gjt.mm.mysql.Driver'
-	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
-	export DB_PORT='db.port.EQ.MYSQL_PORT_3306_TCP_PORT'
+#	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
+	export DB_HOST="db.host.EQ.$CONTAINER_TO_LINK_TO"
+#	export DB_PORT='db.port.EQ.MYSQL_PORT_3306_TCP_PORT'
+	export DB_PORT='db.port.EQ.3306'
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
@@ -77,7 +81,8 @@ if [ "$1" == "postgres" ]; then
         export CONTAINER_TO_LINK_TO="Postgres_$3"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:postgres"
         export DB_DRIVER='org.postgresql.Driver'
-	export DB_HOST='db.host.EQ.POSTGRES_PORT_5432_TCP_ADDR'
+#	export DB_HOST='db.host.EQ.POSTGRES_PORT_5432_TCP_ADDR'
+	export DB_HOST="db.host.EQ.$CONTAINER_TO_LINK_TO"
 	export DB_PORT='db.port.EQ.5432'
 	export DB_USERNAME='db.username.EQ.postgres'
 	export DB_PASSWORD='db.password.EQ.mysecretpassword'
@@ -97,8 +102,9 @@ if [ "$1" == "oracle" ]; then
 #The oracle address in the linked container structure is ORACLE_$3__PORT_1521_TCP_ADDR
         export CONTAINER_TO_LINK_TO_UPPER_CASE="${CONTAINER_TO_LINK_TO^^}"
         export STACK_NAME_TO_UPPER_CASE="${3^^}"
-	export DB_HOST="db.host.EQ.ORACLE_${STACK_NAME_TO_UPPER_CASE}_PORT_1521_TCP_ADDR"
-        echo "DB_HOST=$DB_HOST"
+#	export DB_HOST="db.host.EQ.ORACLE_${STACK_NAME_TO_UPPER_CASE}_PORT_1521_TCP_ADDR"
+#       echo "DB_HOST=$DB_HOST"
+        export DB_HOST="db.host.EQ.$CONTAINER_TO_LINK_TO"
 	export DB_PORT='db.port.EQ.1521'
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
@@ -110,13 +116,13 @@ fi
 sleep 5
 echo "Starting Alfresco!"
 # docker run -t -i -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3-$CLUSTER_MEMBER_SUFFIX \
-docker run -d -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3-$8 \
+docker run --net=$3 -d -p 8443  --name $3-$8 \
 --volumes-from alf_data-$3-$8 \
 -d -e INITAL_PASS=admun \
 -e ALF_1=mail.host.EQ.smtp.gmail.com \
 -e ALF_2=mail.port.EQ.587 \
 -e ALF_3=mail.username.EQ.pdubois824@gmail.com \
--e ALF_4=mail.password.EQ.Medira123$ \
+-e ALF_4=mail.password.EQ.Gibon123$ \
 -e ALF_5=mail.protocol.EQ.smtp \
 -e ALF_6=mail.encoding.EQ.UTF-8 \
 -e ALF_7=mail.from.default.EQ.pdubois824@gmail.com \
