@@ -1,9 +1,11 @@
-FROM ubuntu
+FROM ubuntu:14.04
 MAINTAINER Philippe Dubois
 ENV DEBIAN_FRONTEND noninteractive
-RUN   apt-get update
-RUN   apt-get install -y --no-install-recommends ubuntu-desktop
-RUN   apt-get update
+RUN apt-get update
+# RUN apt-get install -y --no-install-recommends ubuntu-desktop
+# RUN apt-get install -y ubuntu-desktop
+RUN apt-get install -y ubuntu-gnome-desktop
+RUN apt-get update
 RUN   apt-get install -y wget
 COPY  ./alfresco-enterprise-__version__-installer-linux-x64.bin /
 RUN   chmod +x ./alfresco-enterprise-__version__-installer-linux-x64.bin

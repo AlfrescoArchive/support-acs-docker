@@ -19,3 +19,10 @@ done
 # delete the network
 echo "Deleting network $1 ..."
 docker network rm $1
+
+# delete index
+rm -R ~/$1-index
+
+# delete content
+rm -R ~/$1-content
+
