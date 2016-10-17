@@ -75,13 +75,13 @@ if [ "$1" == "mysql" ]; then
     	echo "Starting up with MySQL!"
         export CONTAINER_TO_LINK_TO="MySQL_$3"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:mysql"
-	docker run --net=$3 --name $CONTAINER_TO_LINK_TO $MYSQL_DATA_CONTAINER -e MYSQL_ROOT_PASSWORD=alfresco -d mysql:$2
+	docker run --network=$3 --name $CONTAINER_TO_LINK_TO $MYSQL_DATA_CONTAINER -e MYSQL_ROOT_PASSWORD=alfresco -d mysql:$2
         echo "If there is no database initialized when the container starts, then a default database will be created. While this is the expected "
         echo "behavior, this means that it will not accept incoming connections until such initialization"
         echo "Sleeping 30 secs waiting for initialization !!!" 
         sleep 30
-#	docker run --net=$3 -i --link $CONTAINER_TO_LINK_TO:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' < ./db_scripts/mysql/create.sql
-	docker run --net=$3 -i  --rm mysql sh -c 'exec mysql -h"'$CONTAINER_TO_LINK_TO'" -P"3306" -uroot -p"alfresco"' < ./db_scripts/mysql/create.sql
+#	docker run --network=$3 -i --link $CONTAINER_TO_LINK_TO:mysql --rm mysql sh -c 'exec mysql -h"$MYSQL_PORT_3306_TCP_ADDR" -P"$MYSQL_PORT_3306_TCP_PORT" -uroot -p"$MYSQL_ENV_MYSQL_ROOT_PASSWORD"' < ./db_scripts/mysql/create.sql
+	docker run --network=$3 -i  --rm mysql sh -c 'exec mysql -h"'$CONTAINER_TO_LINK_TO'" -P"3306" -uroot -p"alfresco"' < ./db_scripts/mysql/create.sql
         echo "Database created!"
         export DB_DRIVER='db.driver.EQ.org.gjt.mm.mysql.Driver'
 #	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
@@ -91,7 +91,8 @@ if [ "$1" == "mysql" ]; then
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
-        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+#        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes\&characterEncoding=UTF-8'
         export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
@@ -99,12 +100,12 @@ if [ "$1" == "mariadb" ]; then
     	echo "Starting up with MariaDB!"
         export CONTAINER_TO_LINK_TO="MariaDB_$3"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:mysql"
-	docker run --net=$3 --name $CONTAINER_TO_LINK_TO -e MYSQL_ROOT_PASSWORD=alfresco -d mariadb:$2
+	docker run --network=$3 --name $CONTAINER_TO_LINK_TO -e MYSQL_ROOT_PASSWORD=alfresco -d mariadb:$2
         echo "If there is no database initialized when the container starts, then a default database will be created. While this is the expected "
         echo "behavior, this means that it will not accept incoming connections until such initialization"
         echo "Sleeping 30 secs waiting for initialization !!!" 
         sleep 30
-	docker run --net=$3 -i  --rm mariadb sh -c 'exec mysql -h"'$CONTAINER_TO_LINK_TO'" -P"3306" -uroot -p"alfresco"' < ./db_scripts/mariadb/create.sql
+	docker run --network=$3 -i  --rm mariadb sh -c 'exec mysql -h"'$CONTAINER_TO_LINK_TO'" -P"3306" -uroot -p"alfresco"' < ./db_scripts/mariadb/create.sql
         echo "Database created!"
         export DB_DRIVER='db.driver.EQ.org.gjt.mm.mysql.Driver'
 #	export DB_HOST='db.host.EQ.MYSQL_PORT_3306_TCP_ADDR'
@@ -114,7 +115,7 @@ if [ "$1" == "mariadb" ]; then
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
-        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes\&characterEncoding=UTF-8'
         export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
@@ -123,10 +124,10 @@ if [ "$1" == "postgres" ]; then
         export CONTAINER_TO_LINK_TO="Postgres_$3"
 #       export CONTAINER_TO_LINK_TO="postgres"
         export CONTAINER_TO_LINK_TO_POSTFIXED="$CONTAINER_TO_LINK_TO:postgres"
-        docker run --net=$3 --name $CONTAINER_TO_LINK_TO -e POSTGRES_PASSWORD=mysecretpassword -d postgres:$2
+        docker run --network=$3 --name $CONTAINER_TO_LINK_TO -e POSTGRES_PASSWORD=mysecretpassword -d postgres:$2
         sleep 30  
-#	docker run --net=$3 -i --link  $CONTAINER_TO_LINK_TO_POSTFIXED --rm postgres sh -c 'export PGPASSWORD=mysecretpassword;exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres' < ./db_scripts/postgres/create.sql
-	docker run --net=$3 -i  --rm postgres sh -c 'export PGPASSWORD=mysecretpassword;exec psql -h "'$CONTAINER_TO_LINK_TO'" -p "5432" -U postgres' < ./db_scripts/postgres/create.sql
+#	docker run --network=$3 -i --link  $CONTAINER_TO_LINK_TO_POSTFIXED --rm postgres sh -c 'export PGPASSWORD=mysecretpassword;exec psql -h "$POSTGRES_PORT_5432_TCP_ADDR" -p "$POSTGRES_PORT_5432_TCP_PORT" -U postgres' < ./db_scripts/postgres/create.sql
+	docker run --network=$3 -i  --rm postgres sh -c 'export PGPASSWORD=mysecretpassword;exec psql -h "'$CONTAINER_TO_LINK_TO'" -p "5432" -U postgres' < ./db_scripts/postgres/create.sql
         export DB_DRIVER='org.postgresql.Driver'
 #	export DB_HOST='db.host.EQ.POSTGRES_PORT_5432_TCP_ADDR'
 	export DB_HOST="db.host.EQ.$CONTAINER_TO_LINK_TO"
@@ -168,7 +169,7 @@ sleep 5
 
 echo "Starting Alfresco with cluster member suffix!, name: $3-$CLUSTER_MEMBER_SUFFIX "
 # docker run -t -i -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3- 
-docker run --net=$3 -d -p 8443  --name $3-$CLUSTER_MEMBER_SUFFIX \
+docker run --network=$3 -d -p 8443  --name $3-$CLUSTER_MEMBER_SUFFIX \
 --volumes-from alf_data-$3 \
 -d -e INITAL_PASS=admun \
 -e ALF_1=mail.host.EQ.smtp.gmail.com \
