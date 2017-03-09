@@ -56,7 +56,7 @@ if [ "$1" == "mysql" ]; then
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
-        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes\&characterEncoding=UTF-8'
         export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
@@ -72,7 +72,7 @@ if [ "$1" == "mariadb" ]; then
 	export DB_USERNAME='db.username.EQ.alfresco'
 	export DB_PASSWORD='db.password.EQ.alfresco'
 	export DB_NAME='db.name.EQ.alfresco'
-        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes&characterEncoding=UTF-8'
+        export DB_URL='db.url.EQ.jdbc:mysql:\/\/${db.host}:${db.port}\/${db.name}?useUnicode=yes\&characterEncoding=UTF-8'
         export DB_POOL_VALIDATE='db.pool.validate.query.EQ.select 1'
 fi
 
@@ -116,7 +116,7 @@ fi
 sleep 5
 echo "Starting Alfresco!"
 # docker run -t -i -p 8443 --link $CONTAINER_TO_LINK_TO_POSTFIXED --name $3-$CLUSTER_MEMBER_SUFFIX \
-docker run --net=$3 -d -p 8443  --name $3-$8 \
+docker run --network=$3 -d -p 8443  --name $3-$8 \
 --volumes-from alf_data-$3-$8 \
 -d -e INITAL_PASS=admun \
 -e ALF_1=mail.host.EQ.smtp.gmail.com \
